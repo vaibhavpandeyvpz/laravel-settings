@@ -1,0 +1,40 @@
+{
+    "authors": [
+        {
+            "name": "Vaibhav Pandey",
+            "email": "contact@vaibhavpandey.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Laravel\\Settings\\": "src/"
+        },
+        "files": [
+            "functions.php"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "description": "Small library to implement cache-able settings into Laravel projects.",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Laravel\\Settings\\SettingsServiceProvider"
+            ],
+            "aliases": {
+                "Settings": "Laravel\\Settings\\SettingsFacade"
+            }
+        }
+    },
+    "license": "MIT",
+    "name": "vaibhavpandeyvpz/laravel-settings",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=7.1"
+    },
+    "require-dev": {
+        "laravel/framework": "^5.0 || ^6.0 || ^7.0 || ^8.0"
+    },
+    "type": "library"
+}
