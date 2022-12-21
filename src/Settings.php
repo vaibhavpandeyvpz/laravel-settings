@@ -55,7 +55,7 @@ class Settings
         $names = $names ?? array_keys($this->addedOrUpdated);
         foreach ($names as $name) {
             call_user_func([config('settings.model_class'), 'query'])
-                ->updateOrCreate(compact('name'), ['value' => $this->settings['name'] ?? null]);
+                ->updateOrCreate(compact('name'), ['value' => $this->settings[$name] ?? null]);
         }
 
         foreach ($this->deleted as $name) {
