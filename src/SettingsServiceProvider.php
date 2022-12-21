@@ -35,6 +35,7 @@ class SettingsServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/settings.php', 'settings');
+        $this->app->singleton(Settings::class);
         $this->app->alias(Settings::class, 'settings');
     }
 }
