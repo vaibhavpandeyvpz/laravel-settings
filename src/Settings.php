@@ -24,7 +24,7 @@ class Settings
         if ($filesystem->exists($cache)) {
             $this->settings = require $cache;
         } else {
-            $this->settings = Setting::query()
+            $this->settings = call_user_func([config('settings.model_class'), 'query'])
                 ->orderBy('name')
                 ->pluck('value', 'name')
                 ->toArray();
@@ -50,7 +50,7 @@ class Settings
      */
     public function put(string $name, $value)
     {
-        Setting::query()
+        call_user_func([config('settings.model_class'), 'query'])
             ->updateOrCreate(compact('name'), compact('value'));
         $this->settings[$name] = $value;
     }
@@ -63,7 +63,7 @@ class Settings
     public function forget(string $name)
     {
         unset($this->settings[$name]);
-        Setting::query()
+        call_user_func([config('settings.model_class'), 'query'])
             ->where('name', $name)
             ->delete();
     }
