@@ -7,6 +7,20 @@ use Illuminate\Filesystem\Filesystem;
 class Settings
 {
     /**
+     * The added/updated settings array.
+     *
+     * @var array
+     */
+    protected $addedOrUpdated = [];
+
+    /**
+     * The deleted settings array.
+     *
+     * @var array
+     */
+    protected $deleted = [];
+
+    /**
      * The settings array.
      *
      * @var array
@@ -32,6 +46,28 @@ class Settings
     }
 
     /**
+     * Persist the settings to the database.
+     *
+     * @param array|null $names
+     */
+    public function commit(?array $names = null)
+    {
+        $names = $names ?? array_keys($this->addedOrUpdated);
+        foreach ($names as $name) {
+            call_user_func([config('settings.model_class'), 'query'])
+                ->updateOrCreate(compact('name'), ['value' => $this->settings['name'] ?? null]);
+        }
+
+        foreach ($this->deleted as $name) {
+            call_user_func([config('settings.model_class'), 'query'])
+                ->where('name', $name)
+                ->delete();
+        }
+
+        $this->deleted = [];
+    }
+
+    /**
      * Get a setting value.
      *
      * @param string $name
@@ -47,25 +83,34 @@ class Settings
      *
      * @param string $name
      * @param mixed $value
+     * @param bool $commit
      */
-    public function put(string $name, $value)
+    public function put(string $name, $value, bool $commit = true)
     {
-        call_user_func([config('settings.model_class'), 'query'])
-            ->updateOrCreate(compact('name'), compact('value'));
         $this->settings[$name] = $value;
+        if ($commit) {
+            $this->commit([$name]);
+        } else {
+            $this->addedOrUpdated[] = $name;
+        }
     }
 
     /**
      * Delete a setting value.
      *
      * @param string $name
+     * @param bool $commit
      */
-    public function forget(string $name)
+    public function forget(string $name, bool $commit = true)
     {
         unset($this->settings[$name]);
-        call_user_func([config('settings.model_class'), 'query'])
-            ->where('name', $name)
-            ->delete();
+        if ($commit) {
+            call_user_func([config('settings.model_class'), 'query'])
+                ->where('name', $name)
+                ->delete();
+        } else {
+            $this->deleted[] = $name;
+        }
     }
 
     /**

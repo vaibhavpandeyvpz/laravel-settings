@@ -39,9 +39,12 @@ settings(['foo' => 'bar']);
 settings()->put('foo', 'bar');
 settings('foo', 'bar');
 
+settings()->put('foo', 'bar', false); // don't update in database yet
+settings()->commit(); // save to database when you want
+
 # retrieve a value
-Settings::get('foo', 'bar');
-settings()->get('foo', 'bar');
+Settings::get('foo');
+settings()->get('foo');
 settings('foo');
 
 # retrieve all values
@@ -49,8 +52,11 @@ Settings::all();
 settings()->all();
 
 # delete a value
-Settings::forget('foo', 'bar');
-settings()->forget('foo', 'bar');
+Settings::forget('foo');
+settings()->forget('foo');
+
+settings()->forget('foo', false); // don't delete from database yet
+settings()->commit(); // delete from database when you want
 ```
 
 ### Caching
